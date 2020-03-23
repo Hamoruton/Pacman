@@ -1,0 +1,17 @@
+﻿  Coffeebreak.cpp
+  Dot.cpp
+  Enemy.cpp
+c:\users\tnakahara\source\repos\pacman_dxlib\enemy.cpp(507): warning C4244: '初期化中': 'double' から 'int' への変換です。データが失われる可能性があります。
+c:\users\tnakahara\source\repos\pacman_dxlib\enemy.cpp(508): warning C4244: '初期化中': 'double' から 'int' への変換です。データが失われる可能性があります。
+  Game.cpp
+  Main.cpp
+  Maze.cpp
+  Pause.cpp
+  Player.cpp
+  Scene.cpp
+  Score.cpp
+  Title.cpp
+  TitleConfig.cpp
+  TitleMenu.cpp
+  コードを生成中...
+  Pacman_DxLib.vcxproj -> C:\Users\tnakahara\source\repos\Pacman_DxLib\Debug\Pacman_DxLib.exe
