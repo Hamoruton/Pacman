@@ -4,38 +4,38 @@
 #include <time.h>
 
 //=============================================================
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================
 CEnemy::CEnemy(int x, int y)
 	:m_iPosX(x), m_iPosY(y),
 	m_iAnimCounter(0), m_iIzikeCounter(0), m_iRestartCounter(0), m_iDecelerationCounter(0), m_iPursuitCounter(0), m_iSpeed(1)
 {
-	//‰æ‘œ‚Ì“Ç‚İ‚İ
+	//ç”»åƒã®èª­ã¿è¾¼ã¿
 	LoadDivGraph(ENEMY_IZIKE_IMAGE, ENEMY_IZIKE_IMAGE_NUM, 2, 4, 16, 16, m_iGHEnemyIzike);
 
-	//ƒƒCƒYî•ñ
+	//ãƒ¡ã‚¤ã‚ºæƒ…å ±
 	m_pMaze = m_cMaze.GetMaze();
 
-	//ƒƒCƒY”z—ñ‚É‚¨‚¯‚éƒGƒlƒ~[‚ÌˆÊ’u
+	//ãƒ¡ã‚¤ã‚ºé…åˆ—ã«ãŠã‘ã‚‹ã‚¨ãƒãƒŸãƒ¼ã®ä½ç½®
 	m_iCurrentMazeIndex = m_iPosY / ENEMY_RELATIVE_MAZE_Y * MAZE_WIDTH + m_iPosX / ENEMY_RELATIVE_MAZE_X;
 	m_iPreviousMazeIndex = 0;
 
-	//‚¢‚¶‚¯ó‘Ô
+	//ã„ã˜ã‘çŠ¶æ…‹
 	m_bIzikeState = false;
 
-	//‘Ò‹@iƒvƒŒƒCƒ„[‚Æ‚ÌÕ“ËŒãj
+	//å¾…æ©Ÿï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã®è¡çªå¾Œï¼‰
 	m_bWait = false;
 
-	//‰“®ƒ‚[ƒh
+	//åˆå‹•ãƒ¢ãƒ¼ãƒ‰
 	m_eMoveMode = MODE_INIT;
 }
 
 //=============================================================
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================
 CEnemy::~CEnemy() 
 {
-	//‰æ‘œƒf[ƒ^”jŠü
+	//ç”»åƒãƒ‡ãƒ¼ã‚¿ç ´æ£„
 	for (int i = 0; i < ENEMY_IZIKE_IMAGE_NUM; i++)
 	{
 		DeleteGraph(m_iGHEnemyIzike[i]);
@@ -43,7 +43,7 @@ CEnemy::~CEnemy()
 }
 
 //=============================================================
-// ƒ‰ƒ“ƒ_ƒ€’l‚ğDIRECTIONŒ^‚ÉƒZƒbƒg
+// ãƒ©ãƒ³ãƒ€ãƒ å€¤ã‚’DIRECTIONå‹ã«ã‚»ãƒƒãƒˆ
 //=============================================================
 void CEnemy::SetDirection(int d) 
 {
@@ -68,61 +68,61 @@ void CEnemy::SetDirection(int d)
 }
 
 //=============================================================
-// “®ì
+// å‹•ä½œ
 //=============================================================
 void CEnemy::Move() 
 {
-	//Œ»İ‚ÌƒGƒlƒ~[‚ÌˆÊ’u
+	//ç¾åœ¨ã®ã‚¨ãƒãƒŸãƒ¼ã®ä½ç½®
 	m_iCurrentMazeIndex = m_iPosY / ENEMY_RELATIVE_MAZE_Y * MAZE_WIDTH + m_iPosX / ENEMY_RELATIVE_MAZE_X;
 
-	//ˆÚ“®
+	//ç§»å‹•
 	Movement();
 
-	//‰ñ“]
+	//å›è»¢
 	CheckTurn();
 
-	//ƒvƒŒƒCƒ„[‚ğH‚×‚é
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’é£Ÿã¹ã‚‹
 	EatPlayer();
 
-	//ƒ[ƒv
+	//ãƒ¯ãƒ¼ãƒ—
 	Warp(m_iCurrentMazeIndex);
 
-	//‚¢‚¶‚¯ƒJƒEƒ“ƒ^XV
+	//ã„ã˜ã‘ã‚«ã‚¦ãƒ³ã‚¿æ›´æ–°
 	IzikeCount();
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒJƒEƒ“ƒ^
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚«ã‚¦ãƒ³ã‚¿
 	m_iAnimCounter++;
 
-	//ƒTƒEƒ“ƒh
+	//ã‚µã‚¦ãƒ³ãƒ‰
 	SEEnemyMove();
 }
 
 //=============================================================
-// ‰“®
+// åˆå‹•
 //=============================================================
 void CEnemy::BaseMove() 
 {
 }
 
 //=============================================================
-// ƒŠƒXƒ^[ƒg‚Ì“®‚«‚Ì§ŒÀ
+// ãƒªã‚¹ã‚¿ãƒ¼ãƒˆæ™‚ã®å‹•ãã®åˆ¶é™
 //=============================================================
 void CEnemy::RestartMove()
 {
 }
 
 //=============================================================
-// ˆÚ“®
+// ç§»å‹•
 //=============================================================
 void CEnemy::Movement() 
 {
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		if (!IsWall())
 		{
-			//ƒ‹[ƒvƒgƒ“ƒlƒ‹•t‹ßŒ¸‘¬
+			//ãƒ«ãƒ¼ãƒ—ãƒˆãƒ³ãƒãƒ«ä»˜è¿‘æ¸›é€Ÿ
 			if (IsDeceleration()) 
 			{
 				m_iDecelerationCounter++;
@@ -137,7 +137,7 @@ void CEnemy::Movement()
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				m_iPosX--;
@@ -147,10 +147,10 @@ void CEnemy::Movement()
 		}
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		if (!IsWall())
 		{
-			//ƒ‹[ƒvƒgƒ“ƒlƒ‹•t‹ßŒ¸‘¬
+			//ãƒ«ãƒ¼ãƒ—ãƒˆãƒ³ãƒãƒ«ä»˜è¿‘æ¸›é€Ÿ
 			if (IsDeceleration())
 			{
 				m_iDecelerationCounter++;
@@ -165,7 +165,7 @@ void CEnemy::Movement()
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				m_iPosX++;
@@ -175,10 +175,10 @@ void CEnemy::Movement()
 		}
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		if (!IsWall())
 		{
-			//ƒ‹[ƒvƒgƒ“ƒlƒ‹•t‹ßŒ¸‘¬
+			//ãƒ«ãƒ¼ãƒ—ãƒˆãƒ³ãƒãƒ«ä»˜è¿‘æ¸›é€Ÿ
 			if (IsDeceleration())
 			{
 				m_iDecelerationCounter++;
@@ -193,7 +193,7 @@ void CEnemy::Movement()
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				m_iPosY++;
@@ -203,10 +203,10 @@ void CEnemy::Movement()
 		}
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		if (!IsWall())
 		{
-			//ƒ‹[ƒvƒgƒ“ƒlƒ‹•t‹ßŒ¸‘¬
+			//ãƒ«ãƒ¼ãƒ—ãƒˆãƒ³ãƒãƒ«ä»˜è¿‘æ¸›é€Ÿ
 			if (IsDeceleration()) 
 			{
 				m_iDecelerationCounter++;
@@ -223,7 +223,7 @@ void CEnemy::Movement()
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				m_iPosY--;
@@ -236,20 +236,20 @@ void CEnemy::Movement()
 }
 
 //=============================================================
-// •Ç‚Æ‚Ì“–‚½‚è”»’è
+// å£ã¨ã®å½“ãŸã‚Šåˆ¤å®š
 //=============================================================
 bool CEnemy::IsWall()
 {
-	//À•W‚Ì’²®
+	//åº§æ¨™ã®èª¿æ•´
 	if (!IsCorrection())
 	{
 		return false;
 	}
 
-	//ˆÚ“®æ‚ÌƒGƒlƒ~[[À•W”z—ñ‚ÌˆÊ’u‚ğæ“¾
+	//ç§»å‹•å…ˆã®ã‚¨ãƒãƒŸãƒ¼ãƒ¼åº§æ¨™é…åˆ—ã®ä½ç½®ã‚’å–å¾—
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		m_iPreviousMazeIndex = (m_iPosY / ENEMY_RELATIVE_MAZE_Y) * MAZE_WIDTH + (m_iPosX / ENEMY_RELATIVE_MAZE_X) + 1;
 		if (*(m_pMaze + m_iPreviousMazeIndex) == m_cMaze.TILE_WALL)
 		{
@@ -257,7 +257,7 @@ bool CEnemy::IsWall()
 		}
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		m_iPreviousMazeIndex = (m_iPosY / ENEMY_RELATIVE_MAZE_Y) * MAZE_WIDTH + (m_iPosX / ENEMY_RELATIVE_MAZE_X) - 1;
 		if (*(m_pMaze + m_iPreviousMazeIndex) == m_cMaze.TILE_WALL)
 		{
@@ -265,7 +265,7 @@ bool CEnemy::IsWall()
 		}
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		m_iPreviousMazeIndex = (m_iPosY / ENEMY_RELATIVE_MAZE_Y) * MAZE_WIDTH + (m_iPosX / ENEMY_RELATIVE_MAZE_X) - MAZE_WIDTH;
 		if (*(m_pMaze + m_iPreviousMazeIndex) == m_cMaze.TILE_WALL)
 		{
@@ -273,7 +273,7 @@ bool CEnemy::IsWall()
 		}
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		m_iPreviousMazeIndex = (m_iPosY / ENEMY_RELATIVE_MAZE_Y) * MAZE_WIDTH + (m_iPosX / ENEMY_RELATIVE_MAZE_X) + MAZE_WIDTH;
 		if (*(m_pMaze + m_iPreviousMazeIndex) == m_cMaze.TILE_WALL)
 		{
@@ -286,7 +286,7 @@ bool CEnemy::IsWall()
 }
 
 //=============================================================
-// À•W‚Ì’²®
+// åº§æ¨™ã®èª¿æ•´
 //=============================================================
 bool CEnemy::IsCorrection() 
 {
@@ -299,11 +299,11 @@ bool CEnemy::IsCorrection()
 }
 
 //=============================================================
-// ƒ[ƒv
+// ãƒ¯ãƒ¼ãƒ—
 //=============================================================
 void CEnemy::Warp(int index)
 {
-	//À•W‚Ì’²®
+	//åº§æ¨™ã®èª¿æ•´
 	if (!IsCorrection())
 	{
 		return;
@@ -320,34 +320,34 @@ void CEnemy::Warp(int index)
 }
 
 //=============================================================
-// is•ûŒü‚©‚çŒ©‚Ä—¼’[‚ªˆÚ“®‚Å‚«‚é‚©‚Ç‚¤‚©
+// é€²è¡Œæ–¹å‘ã‹ã‚‰è¦‹ã¦ä¸¡ç«¯ãŒç§»å‹•ã§ãã‚‹ã‹ã©ã†ã‹
 //=============================================================
 bool CEnemy::IsBothEndsTurn(int index) 
 {
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E¨ã‚Æ‰º‚ğƒ`ƒFƒbƒN
+	case VECTOR_RIGHT:		//å³â†’ä¸Šã¨ä¸‹ã‚’ãƒã‚§ãƒƒã‚¯
 		if (*(m_pMaze + index - MAZE_WIDTH) != m_cMaze.TILE_WALL || *(m_pMaze + index + MAZE_WIDTH) != m_cMaze.TILE_WALL)
 		{
 			return true;
 		}
 		break;
 
-	case VECTOR_LEFT:		//¶¨ã‚Æ‰º‚ğƒ`ƒFƒbƒN
+	case VECTOR_LEFT:		//å·¦â†’ä¸Šã¨ä¸‹ã‚’ãƒã‚§ãƒƒã‚¯
 		if (*(m_pMaze + index - MAZE_WIDTH) != m_cMaze.TILE_WALL || *(m_pMaze + index + MAZE_WIDTH) != m_cMaze.TILE_WALL)
 		{
 			return true;
 		}
 		break;
 
-	case VECTOR_UP:			//ã¨‰E‚Æ¶‚ğƒ`ƒFƒbƒN
+	case VECTOR_UP:			//ä¸Šâ†’å³ã¨å·¦ã‚’ãƒã‚§ãƒƒã‚¯
 		if (*(m_pMaze + index + 1) != m_cMaze.TILE_WALL || *(m_pMaze + index - 1) != m_cMaze.TILE_WALL)
 		{
 			return true;
 		}
 		break;
 
-	case VECTOR_DOWN:		//ã¨‰E‚Æ¶‚ğƒ`ƒFƒbƒN
+	case VECTOR_DOWN:		//ä¸Šâ†’å³ã¨å·¦ã‚’ãƒã‚§ãƒƒã‚¯
 		if (*(m_pMaze + index + 1) != m_cMaze.TILE_WALL || *(m_pMaze + index - 1) != m_cMaze.TILE_WALL)
 		{
 			return true;
@@ -359,11 +359,11 @@ bool CEnemy::IsBothEndsTurn(int index)
 }
 
 //=============================================================
-// Œ»İ‚ÌˆÊ’u‚©‚ç‰ñ“]‚Å‚«‚é•ûŒü‚ğƒ‰ƒ“ƒ_ƒ€‚ÅŒˆ‚ß‚é
+// ç¾åœ¨ã®ä½ç½®ã‹ã‚‰å›è»¢ã§ãã‚‹æ–¹å‘ã‚’ãƒ©ãƒ³ãƒ€ãƒ ã§æ±ºã‚ã‚‹
 //=============================================================
 void CEnemy::CheckTurn() 
 {
-	//À•W‚Ì’²®
+	//åº§æ¨™ã®èª¿æ•´
 	if (!IsCorrection())
 	{
 		return;
@@ -371,7 +371,7 @@ void CEnemy::CheckTurn()
 
 	if (IsBothEndsTurn(m_iCurrentMazeIndex))
 	{
-		//’ÇÕ
+		//è¿½è·¡
 		Pursuit();
 	}
 	else 
@@ -381,47 +381,49 @@ void CEnemy::CheckTurn()
 }
 
 //=============================================================
-// ‚¢‚¶‚¯ƒJƒEƒ“ƒ^‚ÌXV
+// ã„ã˜ã‘ã‚«ã‚¦ãƒ³ã‚¿ã®æ›´æ–°
 //=============================================================
 void CEnemy::IzikeCount() 
 {
 	if (m_bIzikeState)
 	{
-		//ƒTƒEƒ“ƒhÄ¶
+		//ã‚µã‚¦ãƒ³ãƒ‰å†ç”Ÿ
 		if (!CheckSoundMem(g_cScene->GetSoundClass()->GetSEIzikeMove()))
 		{
 			PlaySoundMem(g_cScene->GetSoundClass()->GetSEIzikeMove(), DX_PLAYTYPE_LOOP);
 		}
 
-		//ƒJƒEƒ“ƒ^‚ÌXV
+		//ã‚«ã‚¦ãƒ³ã‚¿ã®æ›´æ–°
 		m_iIzikeCounter++;
 
 		if (m_iIzikeCounter > ENEMY_IZIKE_TIME)
 		{
-			//ƒTƒEƒ“ƒh’â~
+			m_bIzikeState = false;
+			m_iIzikeCounter = 0;
+
+			///ã‚¨ãƒãƒŸãƒ¼ã‚’é£Ÿã¹ãŸæ™‚ã®ã‚¹ã‚³ã‚¢åŠ ç®—ã®å¤‰æ›´ã‚«ã‚¦ãƒ³ã‚¿ã®åˆæœŸåŒ–
+			g_cScene->GetGameClass()->GetPlayerClass()->SetIzikeScoreCounter(0);
+		}
+	}
+	else
+	{
+		//ã‚µã‚¦ãƒ³ãƒ‰åœæ­¢
 			if (CheckSoundMem(g_cScene->GetSoundClass()->GetSEIzikeMove()))
 			{
 				StopSoundMem(g_cScene->GetSoundClass()->GetSEIzikeMove());
 			}
-
-			m_bIzikeState = false;
-			m_iIzikeCounter = 0;
-
-			///ƒGƒlƒ~[‚ğH‚×‚½‚ÌƒXƒRƒA‰ÁZ‚Ì•ÏXƒJƒEƒ“ƒ^‚Ì‰Šú‰»
-			g_cScene->GetGameClass()->GetPlayerClass()->SetIzikeScoreCounter(0);
-		}
 	}
 }
 
 //=============================================================
-// ‚¢‚¶‚¯ó‘ÔƒvƒŒƒCƒ„[‚ÆÕ“ËŒã5•bŠÔ’†‰›‚Å‘Ò‹@
+// ã„ã˜ã‘çŠ¶æ…‹æ™‚ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨è¡çªå¾Œ5ç§’é–“ä¸­å¤®ã§å¾…æ©Ÿ
 //=============================================================
 void CEnemy::Restart() 
 {
 }
 
 //=============================================================
-// ƒvƒŒƒCƒ„[‚ğH‚×ƒXƒ^[ƒg’n“_‚Ö–ß‚·
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’é£Ÿã¹ã‚¹ã‚¿ãƒ¼ãƒˆåœ°ç‚¹ã¸æˆ»ã™
 //=============================================================
 void CEnemy::EatPlayer() 
 {
@@ -429,7 +431,7 @@ void CEnemy::EatPlayer()
 	{
 		if (IsPlayer())
 		{
-			//ƒGƒlƒ~[‰ŠúˆÊ’u
+			//ã‚¨ãƒãƒŸãƒ¼åˆæœŸä½ç½®
 			g_cScene->GetGameClass()->GetBlinkyClass()->SetPosX(9 * ENEMY_RELATIVE_MAZE_X);
 			g_cScene->GetGameClass()->GetBlinkyClass()->SetPosY(8 * ENEMY_RELATIVE_MAZE_Y);
 			g_cScene->GetGameClass()->GetPinkyClass()->SetPosX(9 * ENEMY_RELATIVE_MAZE_X);
@@ -439,33 +441,33 @@ void CEnemy::EatPlayer()
 			g_cScene->GetGameClass()->GetCrydeClass()->SetPosX(10 * ENEMY_RELATIVE_MAZE_X);
 			g_cScene->GetGameClass()->GetCrydeClass()->SetPosY(10 * ENEMY_RELATIVE_MAZE_Y);
 
-			//ƒvƒŒƒCƒ„[‰ŠúˆÊ’u
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åˆæœŸä½ç½®
 			g_cScene->GetGameClass()->GetPlayerClass()->SetPosX(9 * PLAYER_RELATIVE_MAZE_X);
 			g_cScene->GetGameClass()->GetPlayerClass()->SetPosY(16 * PLAYER_RELATIVE_MAZE_Y);
 
-			//ƒŠƒXƒ^[ƒgƒ‚[ƒh
+			//ãƒªã‚¹ã‚¿ãƒ¼ãƒˆãƒ¢ãƒ¼ãƒ‰
 			g_cScene->GetGameClass()->GetBlinkyClass()->m_eMoveMode = MODE_PURSUIT;
 			g_cScene->GetGameClass()->GetPinkyClass()->m_eMoveMode = MODE_PURSUIT;
 			g_cScene->GetGameClass()->GetInkyClass()->m_eMoveMode = MODE_PURSUIT;
 			g_cScene->GetGameClass()->GetCrydeClass()->m_eMoveMode = MODE_PURSUIT;
 
-			//ƒGƒlƒ~[‚Ì•ûŒüƒŠƒZƒbƒg
+			//ã‚¨ãƒãƒŸãƒ¼ã®æ–¹å‘ãƒªã‚»ãƒƒãƒˆ
 			g_cScene->GetGameClass()->GetBlinkyClass()->SetDirection(0);
 			g_cScene->GetGameClass()->GetPinkyClass()->SetDirection(2);
 			g_cScene->GetGameClass()->GetInkyClass()->SetDirection(0);
 			g_cScene->GetGameClass()->GetCrydeClass()->SetDirection(1);
 
-			//ƒvƒŒƒCƒ„[‚Ì•ûŒüƒŠƒZƒbƒg
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ–¹å‘ãƒªã‚»ãƒƒãƒˆ
 			g_cScene->GetGameClass()->GetPlayerClass()->SetZeroDirection();
 
-			//ƒvƒŒƒCƒ„[‚Ìc‹@
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ®‹æ©Ÿ
 			int current_remain = g_cScene->GetScoreClass()->GetRemainCounter();
 			g_cScene->GetScoreClass()->SetRemainCounter(current_remain - 1);
 
-			//ƒQ[ƒ€€”õ
+			//ã‚²ãƒ¼ãƒ æº–å‚™
 			g_cScene->GetGameClass()->m_eGameStatus = g_cScene->GetGameClass()->STATUS_GAMEREADY_2;
 
-			//ƒTƒEƒ“ƒh’â~
+			//ã‚µã‚¦ãƒ³ãƒ‰åœæ­¢
 			StopSoundMem(g_cScene->GetSoundClass()->GetSEDotEat());
 			StopSoundMem(g_cScene->GetSoundClass()->GetSEEnemyMove());
 		}
@@ -473,7 +475,7 @@ void CEnemy::EatPlayer()
 }
 
 //=============================================================
-// ƒvƒŒƒCƒ„[‚Æ‚Ì“–‚½‚è”»’è
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã®å½“ãŸã‚Šåˆ¤å®š
 //=============================================================
 bool CEnemy::IsPlayer() 
 {
@@ -486,7 +488,7 @@ bool CEnemy::IsPlayer()
 }
 
 //=============================================================
-// ƒ‹[ƒvƒgƒ“ƒlƒ‹•t‹ßŒ¸‘¬
+// ãƒ«ãƒ¼ãƒ—ãƒˆãƒ³ãƒãƒ«ä»˜è¿‘æ¸›é€Ÿ
 //=============================================================
 bool CEnemy::IsDeceleration() 
 {
@@ -500,14 +502,14 @@ bool CEnemy::IsDeceleration()
 }
 
 //=============================================================
-// ƒvƒŒƒCƒ„[’ÇÕ
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¿½è·¡
 //=============================================================
 void CEnemy::Pursuit() 
 {
 	int playerX = g_cScene->GetGameClass()->GetPlayerClass()->GetPosX() / PLAYER_IMAGE_EXPANSION_X;
 	int playerY = g_cScene->GetGameClass()->GetPlayerClass()->GetPosY() / PLAYER_IMAGE_EXPANSION_Y;
 
-	if ((m_iPosX / ENEMY_IMAGE_EXPANSION_X < playerX) && (m_iPosY / ENEMY_IMAGE_EXPANSION_Y < playerY))			//‰E‚©‰º
+	if ((m_iPosX / ENEMY_IMAGE_EXPANSION_X < playerX) && (m_iPosY / ENEMY_IMAGE_EXPANSION_Y < playerY))			//å³ã‹ä¸‹
 	{
 		int r = rand() % 2;
 		m_iDirection = (r == 0) ? 0 : 3;
@@ -515,16 +517,16 @@ void CEnemy::Pursuit()
 		m_iPursuitCounter++;
 		if (m_iPursuitCounter > 2) 
 		{
-			SetDirection(1);		//¶
+			SetDirection(1);		//å·¦
 			m_iPursuitCounter++;
 			if (m_iPursuitCounter > 3) 
 			{
-				SetDirection(2);	//ã
+				SetDirection(2);	//ä¸Š
 				m_iPursuitCounter = 0;
 			}
 		}
 	}
-	else if ((m_iPosX / ENEMY_IMAGE_EXPANSION_X < playerX) && (m_iPosY / ENEMY_IMAGE_EXPANSION_Y > playerY))	//‰E‚©ã
+	else if ((m_iPosX / ENEMY_IMAGE_EXPANSION_X < playerX) && (m_iPosY / ENEMY_IMAGE_EXPANSION_Y > playerY))	//å³ã‹ä¸Š
 	{
 		int r = rand() % 2;
 		m_iDirection = (r == 0) ? 0 : 2;
@@ -532,16 +534,16 @@ void CEnemy::Pursuit()
 		m_iPursuitCounter++;
 		if (m_iPursuitCounter > 2)
 		{
-			SetDirection(1);		//¶
+			SetDirection(1);		//å·¦
 			m_iPursuitCounter++;
 			if (m_iPursuitCounter > 3)
 			{
-				SetDirection(3);	//‰º
+				SetDirection(3);	//ä¸‹
 				m_iPursuitCounter = 0;
 			}
 		}
 	}
-	else if ((m_iPosX / ENEMY_IMAGE_EXPANSION_X > playerX) && (m_iPosY / ENEMY_IMAGE_EXPANSION_Y < playerY))	//¶‚©‰º
+	else if ((m_iPosX / ENEMY_IMAGE_EXPANSION_X > playerX) && (m_iPosY / ENEMY_IMAGE_EXPANSION_Y < playerY))	//å·¦ã‹ä¸‹
 	{
 		int r = rand() % 2;
 		m_iDirection = (r == 0) ? 1 : 3;
@@ -549,16 +551,16 @@ void CEnemy::Pursuit()
 		m_iPursuitCounter++;
 		if (m_iPursuitCounter > 2)
 		{
-			SetDirection(0);		//‰E
+			SetDirection(0);		//å³
 			m_iPursuitCounter++;
 			if (m_iPursuitCounter > 3)
 			{
-				SetDirection(2);	//ã
+				SetDirection(2);	//ä¸Š
 				m_iPursuitCounter = 0;
 			}
 		}
 	}
-	else if ((m_iPosX / ENEMY_IMAGE_EXPANSION_X > playerX) && (m_iPosY / ENEMY_IMAGE_EXPANSION_Y > playerY))	//¶‚©ã
+	else if ((m_iPosX / ENEMY_IMAGE_EXPANSION_X > playerX) && (m_iPosY / ENEMY_IMAGE_EXPANSION_Y > playerY))	//å·¦ã‹ä¸Š
 	{
 		int r = rand() % 2;
 		m_iDirection = (r == 0) ? 1 : 2;
@@ -566,11 +568,11 @@ void CEnemy::Pursuit()
 		m_iPursuitCounter++;
 		if (m_iPursuitCounter > 2)
 		{
-			SetDirection(0);		//‰E
+			SetDirection(0);		//å³
 			m_iPursuitCounter++;
 			if (m_iPursuitCounter > 3)
 			{
-				SetDirection(3);	//‰º
+				SetDirection(3);	//ä¸‹
 				m_iPursuitCounter = 0;
 			}
 		}
@@ -583,7 +585,7 @@ void CEnemy::Pursuit()
 }
 
 //=============================================================
-// ƒGƒlƒ~[ˆÚ“®ƒTƒEƒ“ƒh
+// ã‚¨ãƒãƒŸãƒ¼ç§»å‹•ã‚µã‚¦ãƒ³ãƒ‰
 //=============================================================
 void CEnemy::SEEnemyMove() 
 {
@@ -591,7 +593,7 @@ void CEnemy::SEEnemyMove()
 	{
 		if (!m_bIzikeState)
 		{
-			//ƒTƒEƒ“ƒhÄ¶
+			//ã‚µã‚¦ãƒ³ãƒ‰å†ç”Ÿ
 			if (!CheckSoundMem(g_cScene->GetSoundClass()->GetSEEnemyMove()))
 			{
 				PlaySoundMem(g_cScene->GetSoundClass()->GetSEEnemyMove(), DX_PLAYTYPE_LOOP);
@@ -599,7 +601,7 @@ void CEnemy::SEEnemyMove()
 		}
 		else
 		{
-			//ƒTƒEƒ“ƒh’â~
+			//ã‚µã‚¦ãƒ³ãƒ‰åœæ­¢
 			if (CheckSoundMem(g_cScene->GetSoundClass()->GetSEEnemyMove()))
 			{
 				StopSoundMem(g_cScene->GetSoundClass()->GetSEEnemyMove());
@@ -609,21 +611,21 @@ void CEnemy::SEEnemyMove()
 }
 
 //=============================================================
-// •`‰æ
+// æç”»
 //=============================================================
 void CEnemy::Draw() const 
 {
 }
 
 //=============================================================
-// ’Êíó‘Ô
+// é€šå¸¸çŠ¶æ…‹
 //=============================================================
 void CEnemy::NormalState() const 
 {
 }
 
 //=============================================================
-// ‚¢‚¶‚¯ó‘Ô
+// ã„ã˜ã‘çŠ¶æ…‹
 //=============================================================
 void CEnemy::IzikeState() const 
 {
@@ -640,30 +642,30 @@ void CEnemy::IzikeState() const
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//	ƒAƒJƒxƒCƒNƒ‰ƒX
+//	ã‚¢ã‚«ãƒ™ã‚¤ã‚¯ãƒ©ã‚¹
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //=============================================================
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================
 CBlinky::CBlinky(int x, int y)
 	:CEnemy(x*ENEMY_RELATIVE_MAZE_X, y*ENEMY_RELATIVE_MAZE_Y), m_iBaseCounter(0)
 {
-	//‰æ‘œ‚Ì“Ç‚İ‚İ
+	//ç”»åƒã®èª­ã¿è¾¼ã¿
 	LoadDivGraph(ENEMY_BLINKY_IMAGE, ENEMY_IMAGE_NUM, 2, 4, 16, 16, m_iGHBlinky);
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	srand((unsigned int)time(NULL));
 	m_iDirection = 1;
 	SetDirection(m_iDirection);
 }
 
 //=============================================================
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================
 CBlinky::~CBlinky() 
 {
-	//‰æ‘œƒf[ƒ^”jŠü
+	//ç”»åƒãƒ‡ãƒ¼ã‚¿ç ´æ£„
 	for (int i = 0; i < ENEMY_IMAGE_NUM; i++) 
 	{
 		DeleteGraph(m_iGHBlinky[i]);
@@ -671,69 +673,69 @@ CBlinky::~CBlinky()
 }
 
 //=============================================================
-// ‰“®
+// åˆå‹•
 //=============================================================
 void CBlinky::BaseMove() 
 {
-	//Œ»İ‚ÌƒGƒlƒ~[‚ÌˆÊ’u
+	//ç¾åœ¨ã®ã‚¨ãƒãƒŸãƒ¼ã®ä½ç½®
 	SetCurrentMazeIndex(GetPosY() / ENEMY_RELATIVE_MAZE_Y * MAZE_WIDTH + GetPosX() / ENEMY_RELATIVE_MAZE_X);
 
-	//ˆÚ“®
+	//ç§»å‹•
 	BaseMovement();
 
 	BaseTurn();
 
-	//ƒvƒŒƒCƒ„[‚ğH‚×‚é
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’é£Ÿã¹ã‚‹
 	EatPlayer();
 
-	//‚¢‚¶‚¯ƒJƒEƒ“ƒ^XV
+	//ã„ã˜ã‘ã‚«ã‚¦ãƒ³ã‚¿æ›´æ–°
 	IzikeCount();
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒJƒEƒ“ƒ^
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚«ã‚¦ãƒ³ã‚¿
 	SetAnimCounter(GetAnimCounter() + 1);
 
-	//ƒTƒEƒ“ƒh
+	//ã‚µã‚¦ãƒ³ãƒ‰
 	SEEnemyMove();
 }
 
 //=============================================================
-// ‰“®‚ÌŒˆ‚Ü‚Á‚½ˆÚ“®i‰Eãj
+// åˆå‹•ã®æ±ºã¾ã£ãŸç§»å‹•ï¼ˆå³ä¸Šï¼‰
 //=============================================================
 void CBlinky::BaseMovement() 
 {
 	int x = GetPosX();
 	int y = GetPosY();
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		if (!IsWall())
 		{
 			SetPosX(x += GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x - 1);
 			}
 
-			//’ÇÕƒ‚[ƒh
+			//è¿½è·¡ãƒ¢ãƒ¼ãƒ‰
 			m_eMoveMode = MODE_PURSUIT;
 			m_iBaseCounter++;
 		}
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		if (!IsWall())
 		{
 			SetPosX(x -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x + 1);
@@ -742,14 +744,14 @@ void CBlinky::BaseMovement()
 		}
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		if (!IsWall())
 		{
 			SetPosY(y -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y + 1);
@@ -758,14 +760,14 @@ void CBlinky::BaseMovement()
 		}
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		if (!IsWall())
 		{
 			SetPosY(y += GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y - 1);
@@ -777,17 +779,17 @@ void CBlinky::BaseMovement()
 }
 
 //=============================================================
-// ‰“®‚ÌŒˆ‚ß‚ç‚ê‚½‰ñ“]
+// åˆå‹•ã®æ±ºã‚ã‚‰ã‚ŒãŸå›è»¢
 //=============================================================
 void CBlinky::BaseTurn() 
 {
-	//À•W‚Ì’²®
+	//åº§æ¨™ã®èª¿æ•´
 	if (!IsCorrection())
 	{
 		return;
 	}
 
-	//ŒÅ’èˆÊ’u‚Å‰ñ“]
+	//å›ºå®šä½ç½®ã§å›è»¢
 	if ((GetCurrentMazeIndex() == 186) || (GetCurrentMazeIndex() == 204)|| (GetCurrentMazeIndex() == 84))
 	{
 		m_iBaseCounter++;
@@ -796,119 +798,119 @@ void CBlinky::BaseTurn()
 	switch (m_iBaseCounter) 
 	{
 	case 1:
-		SetDirection(3);	//‰º
+		SetDirection(3);	//ä¸‹
 		break;
 
 	case 2:
-		SetDirection(1);	//¶
+		SetDirection(1);	//å·¦
 		break;
 
 	case 3:
-		SetDirection(2);	//ã
+		SetDirection(2);	//ä¸Š
 		break;
 
 	case 4:
-		SetDirection(0);	//‰E
+		SetDirection(0);	//å³
 		break;
 	}
 }
 
 //=============================================================
-// ƒŠƒXƒ^[ƒg‚Ì“®‚«‚Ì§ŒÀ
+// ãƒªã‚¹ã‚¿ãƒ¼ãƒˆæ™‚ã®å‹•ãã®åˆ¶é™
 //=============================================================
 void CBlinky::RestartMove() 
 {
-	//ˆê’èŠÔ‘Ò‹@
+	//ä¸€å®šæ™‚é–“å¾…æ©Ÿ
 	if (GetWait())
 	{
 		Restart();
 	}
 	else
 	{
-		//Œ»İ‚ÌƒGƒlƒ~[‚ÌˆÊ’u
+		//ç¾åœ¨ã®ã‚¨ãƒãƒŸãƒ¼ã®ä½ç½®
 		SetCurrentMazeIndex(GetPosY() / ENEMY_RELATIVE_MAZE_Y * MAZE_WIDTH + GetPosX() / ENEMY_RELATIVE_MAZE_X);
 
-		//ˆÚ“®
+		//ç§»å‹•
 		RestartMovement();
 
-		//ƒvƒŒƒCƒ„[‚ğH‚×‚é
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’é£Ÿã¹ã‚‹
 		EatPlayer();
 
-		//‚¢‚¶‚¯ƒJƒEƒ“ƒ^XV
+		//ã„ã˜ã‘ã‚«ã‚¦ãƒ³ã‚¿æ›´æ–°
 		IzikeCount();
 	}
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒJƒEƒ“ƒ^
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚«ã‚¦ãƒ³ã‚¿
 	SetAnimCounter(GetAnimCounter() + 1);
 
-	//ƒTƒEƒ“ƒh
+	//ã‚µã‚¦ãƒ³ãƒ‰
 	SEEnemyMove();
 }
 
 //=============================================================
-// ƒŠƒXƒ^[ƒg‚ÌˆÚ“®
+// ãƒªã‚¹ã‚¿ãƒ¼ãƒˆæ™‚ã®ç§»å‹•
 //=============================================================
 void CBlinky::RestartMovement() 
 {
 	int x = GetPosX();
 	int y = GetPosY();
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		if (!IsWall())
 		{
 			SetPosX(x += GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x - 1);
 			}
-			//‰º‚É§ŒÀ
+			//ä¸‹ã«åˆ¶é™
 			SetDirection(3);
 		}
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		if (!IsWall())
 		{
 			SetPosX(x -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x + 1);
 			}
-			//‰º‚É§ŒÀ
+			//ä¸‹ã«åˆ¶é™
 			SetDirection(3);
 		}
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		if (!IsWall())
 		{
 			SetPosY(y -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y - 1);
 			}
 
-			//‰E‚©¶‚É§ŒÀ
+			//å³ã‹å·¦ã«åˆ¶é™
 			m_iDirection = rand() % 2;
 			SetDirection(m_iDirection);
 		}
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		if (!IsWall())
 		{
 			SetPosY(y += GetSpeed());
@@ -916,13 +918,13 @@ void CBlinky::RestartMovement()
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y + 1);
 			}
 
-			//’ÇÕƒ‚[ƒh
+			//è¿½è·¡ãƒ¢ãƒ¼ãƒ‰
 			m_eMoveMode = MODE_PURSUIT;
 		}
 		break;
@@ -930,7 +932,7 @@ void CBlinky::RestartMovement()
 }
 
 //=============================================================
-// ‚¢‚¶‚¯ó‘ÔƒvƒŒƒCƒ„[‚ÆÕ“ËŒã5•bŠÔ’†‰›‚Å‘Ò‹@
+// ã„ã˜ã‘çŠ¶æ…‹æ™‚ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨è¡çªå¾Œ5ç§’é–“ä¸­å¤®ã§å¾…æ©Ÿ
 //=============================================================
 void CBlinky::Restart()
 {
@@ -944,7 +946,7 @@ void CBlinky::Restart()
 }
 
 //=============================================================
-// •`‰æ
+// æç”»
 //=============================================================
 void CBlinky::Draw() const 
 {
@@ -959,28 +961,28 @@ void CBlinky::Draw() const
 }
 
 //=============================================================
-// ’Êíó‘Ô
+// é€šå¸¸çŠ¶æ…‹
 //=============================================================
 void CBlinky::NormalState() const
 {
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHBlinky[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2], TRUE);
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHBlinky[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2 + 2], TRUE);
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHBlinky[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2 + 4], TRUE);
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHBlinky[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2 + 6], TRUE);
 		break;
@@ -993,33 +995,33 @@ void CBlinky::NormalState() const
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//	ƒsƒ“ƒL[ƒNƒ‰ƒX
+//	ãƒ”ãƒ³ã‚­ãƒ¼ã‚¯ãƒ©ã‚¹
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //=============================================================
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================
 CPinky::CPinky(int x, int y)
 	:CEnemy(x*ENEMY_RELATIVE_MAZE_X, y*ENEMY_RELATIVE_MAZE_Y), m_iBaseCounter(0)
 {
-	//‰æ‘œ‚Ì“Ç‚İ‚İ
+	//ç”»åƒã®èª­ã¿è¾¼ã¿
 	LoadDivGraph(ENEMY_PINKY_IMAGE, ENEMY_IMAGE_NUM, 2, 4, 16, 16, m_iGHPinky);
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	srand((unsigned int)time(NULL));
 	m_iDirection = 2;
 	SetDirection(m_iDirection);
 
-	//ƒXƒ^[ƒg”»’è
+	//ã‚¹ã‚¿ãƒ¼ãƒˆåˆ¤å®š
 	m_bStart = false;
 }
 
 //=============================================================
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================
 CPinky::~CPinky()
 {
-	//‰æ‘œƒf[ƒ^”jŠü
+	//ç”»åƒãƒ‡ãƒ¼ã‚¿ç ´æ£„
 	for (int i = 0; i < ENEMY_IMAGE_NUM; i++)
 	{
 		DeleteGraph(m_iGHPinky[i]);
@@ -1027,52 +1029,52 @@ CPinky::~CPinky()
 }
 
 //=============================================================
-// ‰“®
+// åˆå‹•
 //=============================================================
 void CPinky::BaseMove()
 {
 	if (m_bStart) 
 	{
-		//Œ»İ‚ÌƒGƒlƒ~[‚ÌˆÊ’u
+		//ç¾åœ¨ã®ã‚¨ãƒãƒŸãƒ¼ã®ä½ç½®
 		SetCurrentMazeIndex(GetPosY() / ENEMY_RELATIVE_MAZE_Y * MAZE_WIDTH + GetPosX() / ENEMY_RELATIVE_MAZE_X);
 
-		//ˆÚ“®
+		//ç§»å‹•
 		BaseMovement();
 
 		BaseTurn();
 
-		//ƒvƒŒƒCƒ„[‚ğH‚×‚é
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’é£Ÿã¹ã‚‹
 		EatPlayer();
 	}
-	//‚¢‚¶‚¯ƒJƒEƒ“ƒ^XV
+	//ã„ã˜ã‘ã‚«ã‚¦ãƒ³ã‚¿æ›´æ–°
 	IzikeCount();
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒJƒEƒ“ƒ^
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚«ã‚¦ãƒ³ã‚¿
 	SetAnimCounter(GetAnimCounter() + 1);
 
-	//ƒTƒEƒ“ƒh
+	//ã‚µã‚¦ãƒ³ãƒ‰
 	SEEnemyMove();
 }
 
 //=============================================================
-// ‰“®‚ÌŒˆ‚Ü‚Á‚½ˆÚ“®i‰Eãj
+// åˆå‹•ã®æ±ºã¾ã£ãŸç§»å‹•ï¼ˆå³ä¸Šï¼‰
 //=============================================================
 void CPinky::BaseMovement()
 {
 	int x = GetPosX();
 	int y = GetPosY();
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		if (!IsWall())
 		{
 			SetPosX(x += GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x - 1);
@@ -1081,14 +1083,14 @@ void CPinky::BaseMovement()
 		}
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		if (!IsWall())
 		{
 			SetPosX(x -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x + 1);
@@ -1097,14 +1099,14 @@ void CPinky::BaseMovement()
 		}
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		if (!IsWall())
 		{
 			SetPosY(y -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y + 1);
@@ -1113,14 +1115,14 @@ void CPinky::BaseMovement()
 		}
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		if (!IsWall())
 		{
 			SetPosY(y += GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y - 1);
@@ -1132,17 +1134,17 @@ void CPinky::BaseMovement()
 }
 
 //=============================================================
-// ‰“®‚ÌŒˆ‚ß‚ç‚ê‚½‰ñ“]
+// åˆå‹•ã®æ±ºã‚ã‚‰ã‚ŒãŸå›è»¢
 //=============================================================
 void CPinky::BaseTurn()
 {
-	//À•W‚Ì’²®
+	//åº§æ¨™ã®èª¿æ•´
 	if (!IsCorrection())
 	{
 		return;
 	}
 
-	//ŒÅ’èˆÊ’u‚Å‰ñ“]
+	//å›ºå®šä½ç½®ã§å›è»¢
 	if ((GetCurrentMazeIndex() == 186) || (GetCurrentMazeIndex() == 204) || (GetCurrentMazeIndex() == 84))
 	{
 		m_iBaseCounter++;
@@ -1151,124 +1153,124 @@ void CPinky::BaseTurn()
 	switch (m_iBaseCounter)
 	{
 	case 1:
-		SetDirection(1);	//‰E
+		SetDirection(1);	//å³
 		break;
 
 	case 2:
-		SetDirection(3);	//‰º
+		SetDirection(3);	//ä¸‹
 		break;
 
 	case 3:
-		SetDirection(1);	//¶
+		SetDirection(1);	//å·¦
 		break;
 
 	case 4:
-		SetDirection(2);	//ã
+		SetDirection(2);	//ä¸Š
 		break;
 
 	case 5:
-		//’ÇÕƒ‚[ƒh
+		//è¿½è·¡ãƒ¢ãƒ¼ãƒ‰
 		m_eMoveMode = MODE_PURSUIT;
 		break;
 	}
 }
 
 //=============================================================
-// ƒŠƒXƒ^[ƒg‚Ì“®‚«‚Ì§ŒÀ
+// ãƒªã‚¹ã‚¿ãƒ¼ãƒˆæ™‚ã®å‹•ãã®åˆ¶é™
 //=============================================================
 void CPinky::RestartMove()
 {
-	//ˆê’èŠÔ‘Ò‹@
+	//ä¸€å®šæ™‚é–“å¾…æ©Ÿ
 	if (GetWait())
 	{
 		Restart();
 	}
 	else
 	{
-		//Œ»İ‚ÌƒGƒlƒ~[‚ÌˆÊ’u
+		//ç¾åœ¨ã®ã‚¨ãƒãƒŸãƒ¼ã®ä½ç½®
 		SetCurrentMazeIndex(GetPosY() / ENEMY_RELATIVE_MAZE_Y * MAZE_WIDTH + GetPosX() / ENEMY_RELATIVE_MAZE_X);
 
-		//ˆÚ“®
+		//ç§»å‹•
 		RestartMovement();
 
-		//ƒvƒŒƒCƒ„[‚ğH‚×‚é
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’é£Ÿã¹ã‚‹
 		EatPlayer();
 
-		//‚¢‚¶‚¯ƒJƒEƒ“ƒ^XV
+		//ã„ã˜ã‘ã‚«ã‚¦ãƒ³ã‚¿æ›´æ–°
 		IzikeCount();
 	}
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒJƒEƒ“ƒ^
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚«ã‚¦ãƒ³ã‚¿
 	SetAnimCounter(GetAnimCounter() + 1);
 
-	//ƒTƒEƒ“ƒh
+	//ã‚µã‚¦ãƒ³ãƒ‰
 	SEEnemyMove();
 }
 
 //=============================================================
-// ƒŠƒXƒ^[ƒg‚ÌˆÚ“®
+// ãƒªã‚¹ã‚¿ãƒ¼ãƒˆæ™‚ã®ç§»å‹•
 //=============================================================
 void CPinky::RestartMovement()
 {
 	int x = GetPosX();
 	int y = GetPosY();
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		if (!IsWall())
 		{
 			SetPosX(x += GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x - 1);
 			}
-			//‰º‚É§ŒÀ
+			//ä¸‹ã«åˆ¶é™
 			SetDirection(3);
 		}
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		if (!IsWall())
 		{
 			SetPosX(x -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x + 1);
 			}
-			//‰º‚É§ŒÀ
+			//ä¸‹ã«åˆ¶é™
 			SetDirection(3);
 		}
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		if (!IsWall())
 		{
 			SetPosY(y -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y - 1);
 			}
 
-			//‰E‚©¶‚É§ŒÀ
+			//å³ã‹å·¦ã«åˆ¶é™
 			m_iDirection = rand() % 2;
 			SetDirection(m_iDirection);
 		}
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		if (!IsWall())
 		{
 			SetPosY(y += GetSpeed());
@@ -1276,13 +1278,13 @@ void CPinky::RestartMovement()
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y + 1);
 			}
 
-			//’ÇÕƒ‚[ƒh
+			//è¿½è·¡ãƒ¢ãƒ¼ãƒ‰
 			m_eMoveMode = MODE_PURSUIT;
 		}
 		break;
@@ -1290,7 +1292,7 @@ void CPinky::RestartMovement()
 }
 
 //=============================================================
-// ‚¢‚¶‚¯ó‘ÔƒvƒŒƒCƒ„[‚ÆÕ“ËŒã5•bŠÔ’†‰›‚Å‘Ò‹@
+// ã„ã˜ã‘çŠ¶æ…‹æ™‚ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨è¡çªå¾Œ5ç§’é–“ä¸­å¤®ã§å¾…æ©Ÿ
 //=============================================================
 void CPinky::Restart()
 {
@@ -1304,7 +1306,7 @@ void CPinky::Restart()
 }
 
 //=============================================================
-// •`‰æ
+// æç”»
 //=============================================================
 void CPinky::Draw() const
 {
@@ -1319,28 +1321,28 @@ void CPinky::Draw() const
 }
 
 //=============================================================
-// ’Êíó‘Ô
+// é€šå¸¸çŠ¶æ…‹
 //=============================================================
 void CPinky::NormalState() const
 {
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHPinky[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2], TRUE);
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHPinky[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2 + 2], TRUE);
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHPinky[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2 + 4], TRUE);
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHPinky[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2 + 6], TRUE);
 		break;
@@ -1353,33 +1355,33 @@ void CPinky::NormalState() const
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//	ƒAƒIƒXƒPƒNƒ‰ƒX
+//	ã‚¢ã‚ªã‚¹ã‚±ã‚¯ãƒ©ã‚¹
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //=============================================================
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================
 CInky::CInky(int x, int y)
 	:CEnemy(x*ENEMY_RELATIVE_MAZE_X, y*ENEMY_RELATIVE_MAZE_Y), m_iBaseCounter(0)
 {
-	//‰æ‘œ‚Ì“Ç‚İ‚İ
+	//ç”»åƒã®èª­ã¿è¾¼ã¿
 	LoadDivGraph(ENEMY_INKY_IMAGE, ENEMY_IMAGE_NUM, 2, 4, 16, 16, m_iGHInky);
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	srand((unsigned int)time(NULL));
 	m_iDirection = 0;
 	SetDirection(m_iDirection);
 
-	//ƒXƒ^[ƒg”»’è
+	//ã‚¹ã‚¿ãƒ¼ãƒˆåˆ¤å®š
 	m_bStart = false;
 }
 
 //=============================================================
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================
 CInky::~CInky()
 {
-	//‰æ‘œƒf[ƒ^”jŠü
+	//ç”»åƒãƒ‡ãƒ¼ã‚¿ç ´æ£„
 	for (int i = 0; i < ENEMY_IMAGE_NUM; i++)
 	{
 		DeleteGraph(m_iGHInky[i]);
@@ -1387,52 +1389,52 @@ CInky::~CInky()
 }
 
 //=============================================================
-// ‰“®
+// åˆå‹•
 //=============================================================
 void CInky::BaseMove()
 {
 	if (m_bStart)
 	{
-		//Œ»İ‚ÌƒGƒlƒ~[‚ÌˆÊ’u
+		//ç¾åœ¨ã®ã‚¨ãƒãƒŸãƒ¼ã®ä½ç½®
 		SetCurrentMazeIndex(GetPosY() / ENEMY_RELATIVE_MAZE_Y * MAZE_WIDTH + GetPosX() / ENEMY_RELATIVE_MAZE_X);
 
-		//ˆÚ“®
+		//ç§»å‹•
 		BaseMovement();
 
 		BaseTurn();
 
-		//ƒvƒŒƒCƒ„[‚ğH‚×‚é
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’é£Ÿã¹ã‚‹
 		EatPlayer();
 	}
-	//‚¢‚¶‚¯ƒJƒEƒ“ƒ^XV
+	//ã„ã˜ã‘ã‚«ã‚¦ãƒ³ã‚¿æ›´æ–°
 	IzikeCount();
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒJƒEƒ“ƒ^
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚«ã‚¦ãƒ³ã‚¿
 	SetAnimCounter(GetAnimCounter() + 1);
 
-	//ƒTƒEƒ“ƒh
+	//ã‚µã‚¦ãƒ³ãƒ‰
 	SEEnemyMove();
 }
 
 //=============================================================
-// ‰“®‚ÌŒˆ‚Ü‚Á‚½ˆÚ“®i‰Eãj
+// åˆå‹•ã®æ±ºã¾ã£ãŸç§»å‹•ï¼ˆå³ä¸Šï¼‰
 //=============================================================
 void CInky::BaseMovement()
 {
 	int x = GetPosX();
 	int y = GetPosY();
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		if (!IsWall())
 		{
 			SetPosX(x += GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x - 1);
@@ -1441,14 +1443,14 @@ void CInky::BaseMovement()
 		}
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		if (!IsWall())
 		{
 			SetPosX(x -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x + 1);
@@ -1457,14 +1459,14 @@ void CInky::BaseMovement()
 		}
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		if (!IsWall())
 		{
 			SetPosY(y -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y + 1);
@@ -1473,14 +1475,14 @@ void CInky::BaseMovement()
 		}
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		if (!IsWall())
 		{
 			SetPosY(y += GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y - 1);
@@ -1492,17 +1494,17 @@ void CInky::BaseMovement()
 }
 
 //=============================================================
-// ‰“®‚ÌŒˆ‚ß‚ç‚ê‚½‰ñ“]
+// åˆå‹•ã®æ±ºã‚ã‚‰ã‚ŒãŸå›è»¢
 //=============================================================
 void CInky::BaseTurn()
 {
-	//À•W‚Ì’²®
+	//åº§æ¨™ã®èª¿æ•´
 	if (!IsCorrection())
 	{
 		return;
 	}
 
-	//ŒÅ’èˆÊ’u‚Å‰ñ“]
+	//å›ºå®šä½ç½®ã§å›è»¢
 	if ((GetCurrentMazeIndex() == 208))
 	{
 		m_iBaseCounter++;
@@ -1511,124 +1513,124 @@ void CInky::BaseTurn()
 	switch (m_iBaseCounter)
 	{
 	case 1:
-		SetDirection(2);	//ã
+		SetDirection(2);	//ä¸Š
 		break;
 
 	case 2:
-		SetDirection(1);	//¶
+		SetDirection(1);	//å·¦
 		break;
 
 	case 3:
-		SetDirection(3);	//‰º
+		SetDirection(3);	//ä¸‹
 		break;
 
 	case 4:
-		SetDirection(1);	//¶
+		SetDirection(1);	//å·¦
 		break;
 
 	case 5:
-		//’ÇÕƒ‚[ƒh
+		//è¿½è·¡ãƒ¢ãƒ¼ãƒ‰
 		m_eMoveMode = MODE_PURSUIT;
 		break;
 	}
 }
 
 //=============================================================
-// ƒŠƒXƒ^[ƒg‚Ì“®‚«‚Ì§ŒÀ
+// ãƒªã‚¹ã‚¿ãƒ¼ãƒˆæ™‚ã®å‹•ãã®åˆ¶é™
 //=============================================================
 void CInky::RestartMove()
 {
-	//ˆê’èŠÔ‘Ò‹@
+	//ä¸€å®šæ™‚é–“å¾…æ©Ÿ
 	if (GetWait())
 	{
 		Restart();
 	}
 	else
 	{
-		//Œ»İ‚ÌƒGƒlƒ~[‚ÌˆÊ’u
+		//ç¾åœ¨ã®ã‚¨ãƒãƒŸãƒ¼ã®ä½ç½®
 		SetCurrentMazeIndex(GetPosY() / ENEMY_RELATIVE_MAZE_Y * MAZE_WIDTH + GetPosX() / ENEMY_RELATIVE_MAZE_X);
 
-		//ˆÚ“®
+		//ç§»å‹•
 		RestartMovement();
 
-		//ƒvƒŒƒCƒ„[‚ğH‚×‚é
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’é£Ÿã¹ã‚‹
 		EatPlayer();
 
-		//‚¢‚¶‚¯ƒJƒEƒ“ƒ^XV
+		//ã„ã˜ã‘ã‚«ã‚¦ãƒ³ã‚¿æ›´æ–°
 		IzikeCount();
 	}
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒJƒEƒ“ƒ^
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚«ã‚¦ãƒ³ã‚¿
 	SetAnimCounter(GetAnimCounter() + 1);
 
-	//ƒTƒEƒ“ƒh
+	//ã‚µã‚¦ãƒ³ãƒ‰
 	SEEnemyMove();
 }
 
 //=============================================================
-// ƒŠƒXƒ^[ƒg‚ÌˆÚ“®
+// ãƒªã‚¹ã‚¿ãƒ¼ãƒˆæ™‚ã®ç§»å‹•
 //=============================================================
 void CInky::RestartMovement()
 {
 	int x = GetPosX();
 	int y = GetPosY();
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		if (!IsWall())
 		{
 			SetPosX(x += GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x - 1);
 			}
-			//‰º‚É§ŒÀ
+			//ä¸‹ã«åˆ¶é™
 			SetDirection(3);
 		}
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		if (!IsWall())
 		{
 			SetPosX(x -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x + 1);
 			}
-			//‰º‚É§ŒÀ
+			//ä¸‹ã«åˆ¶é™
 			SetDirection(3);
 		}
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		if (!IsWall())
 		{
 			SetPosY(y -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y - 1);
 			}
 
-			//‰E‚©¶‚É§ŒÀ
+			//å³ã‹å·¦ã«åˆ¶é™
 			m_iDirection = rand() % 2;
 			SetDirection(m_iDirection);
 		}
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		if (!IsWall())
 		{
 			SetPosY(y += GetSpeed());
@@ -1636,13 +1638,13 @@ void CInky::RestartMovement()
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y + 1);
 			}
 
-			//’ÇÕƒ‚[ƒh
+			//è¿½è·¡ãƒ¢ãƒ¼ãƒ‰
 			m_eMoveMode = MODE_PURSUIT;
 		}
 		break;
@@ -1650,7 +1652,7 @@ void CInky::RestartMovement()
 }
 
 //=============================================================
-// ‚¢‚¶‚¯ó‘ÔƒvƒŒƒCƒ„[‚ÆÕ“ËŒã5•bŠÔ’†‰›‚Å‘Ò‹@
+// ã„ã˜ã‘çŠ¶æ…‹æ™‚ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨è¡çªå¾Œ5ç§’é–“ä¸­å¤®ã§å¾…æ©Ÿ
 //=============================================================
 void CInky::Restart()
 {
@@ -1664,7 +1666,7 @@ void CInky::Restart()
 }
 
 //=============================================================
-// •`‰æ
+// æç”»
 //=============================================================
 void CInky::Draw() const
 {
@@ -1679,28 +1681,28 @@ void CInky::Draw() const
 }
 
 //=============================================================
-// ’Êíó‘Ô
+// é€šå¸¸çŠ¶æ…‹
 //=============================================================
 void CInky::NormalState() const
 {
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHInky[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2], TRUE);
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHInky[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2 + 2], TRUE);
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHInky[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2 + 4], TRUE);
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHInky[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2 + 6], TRUE);
 		break;
@@ -1713,33 +1715,33 @@ void CInky::NormalState() const
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//	ƒOƒYƒ^ƒNƒ‰ƒX
+//	ã‚°ã‚ºã‚¿ã‚¯ãƒ©ã‚¹
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //=============================================================
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================
 CCryde::CCryde(int x, int y)
 	:CEnemy(x*ENEMY_RELATIVE_MAZE_X, y*ENEMY_RELATIVE_MAZE_Y), m_iBaseCounter(0)
 {
-	//‰æ‘œ‚Ì“Ç‚İ‚İ
+	//ç”»åƒã®èª­ã¿è¾¼ã¿
 	LoadDivGraph(ENEMY_CRYDE_IMAGE, ENEMY_IMAGE_NUM, 2, 4, 16, 16, m_iGHCryde);
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	srand((unsigned int)time(NULL));
 	m_iDirection = 1;
 	SetDirection(m_iDirection);
 
-	//ƒXƒ^[ƒg”»’è
+	//ã‚¹ã‚¿ãƒ¼ãƒˆåˆ¤å®š
 	m_bStart = false;
 }
 
 //=============================================================
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //=============================================================
 CCryde::~CCryde()
 {
-	//‰æ‘œƒf[ƒ^”jŠü
+	//ç”»åƒãƒ‡ãƒ¼ã‚¿ç ´æ£„
 	for (int i = 0; i < ENEMY_IMAGE_NUM; i++)
 	{
 		DeleteGraph(m_iGHCryde[i]);
@@ -1747,52 +1749,52 @@ CCryde::~CCryde()
 }
 
 //=============================================================
-// ‰“®
+// åˆå‹•
 //=============================================================
 void CCryde::BaseMove()
 {
 	if (m_bStart)
 	{
-		//Œ»İ‚ÌƒGƒlƒ~[‚ÌˆÊ’u
+		//ç¾åœ¨ã®ã‚¨ãƒãƒŸãƒ¼ã®ä½ç½®
 		SetCurrentMazeIndex(GetPosY() / ENEMY_RELATIVE_MAZE_Y * MAZE_WIDTH + GetPosX() / ENEMY_RELATIVE_MAZE_X);
 
-		//ˆÚ“®
+		//ç§»å‹•
 		BaseMovement();
 
 		BaseTurn();
 
-		//ƒvƒŒƒCƒ„[‚ğH‚×‚é
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’é£Ÿã¹ã‚‹
 		EatPlayer();
 	}
-	//‚¢‚¶‚¯ƒJƒEƒ“ƒ^XV
+	//ã„ã˜ã‘ã‚«ã‚¦ãƒ³ã‚¿æ›´æ–°
 	IzikeCount();
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒJƒEƒ“ƒ^
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚«ã‚¦ãƒ³ã‚¿
 	SetAnimCounter(GetAnimCounter() + 1);
 
-	//ƒTƒEƒ“ƒh
+	//ã‚µã‚¦ãƒ³ãƒ‰
 	SEEnemyMove();
 }
 
 //=============================================================
-// ‰“®‚ÌŒˆ‚Ü‚Á‚½ˆÚ“®i‰Eãj
+// åˆå‹•ã®æ±ºã¾ã£ãŸç§»å‹•ï¼ˆå³ä¸Šï¼‰
 //=============================================================
 void CCryde::BaseMovement()
 {
 	int x = GetPosX();
 	int y = GetPosY();
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		if (!IsWall())
 		{
 			SetPosX(x += GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x - 1);
@@ -1801,14 +1803,14 @@ void CCryde::BaseMovement()
 		}
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		if (!IsWall())
 		{
 			SetPosX(x -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x + 1);
@@ -1817,14 +1819,14 @@ void CCryde::BaseMovement()
 		}
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		if (!IsWall())
 		{
 			SetPosY(y -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y + 1);
@@ -1833,14 +1835,14 @@ void CCryde::BaseMovement()
 		}
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		if (!IsWall())
 		{
 			SetPosY(y += GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y - 1);
@@ -1852,17 +1854,17 @@ void CCryde::BaseMovement()
 }
 
 //=============================================================
-// ‰“®‚ÌŒˆ‚ß‚ç‚ê‚½‰ñ“]
+// åˆå‹•ã®æ±ºã‚ã‚‰ã‚ŒãŸå›è»¢
 //=============================================================
 void CCryde::BaseTurn()
 {
-	//À•W‚Ì’²®
+	//åº§æ¨™ã®èª¿æ•´
 	if (!IsCorrection())
 	{
 		return;
 	}
 
-	//ŒÅ’èˆÊ’u‚Å‰ñ“]
+	//å›ºå®šä½ç½®ã§å›è»¢
 	if ((GetCurrentMazeIndex() == 209))
 	{
 		m_iBaseCounter++;
@@ -1871,125 +1873,125 @@ void CCryde::BaseTurn()
 	switch (m_iBaseCounter)
 	{
 	case 1:
-		SetDirection(2);	//ã
+		SetDirection(2);	//ä¸Š
 		g_cScene->GetGameClass()->GetPinkyClass()->SetStart(true);
 		break;
 
 	case 2:
-		SetDirection(0);	//‰E
+		SetDirection(0);	//å³
 		break;
 
 	case 3:
-		SetDirection(3);	//‰º
+		SetDirection(3);	//ä¸‹
 		break;
 
 	case 4:
-		SetDirection(0);	//‰E
+		SetDirection(0);	//å³
 		break;
 
 	case 5:
-		//’ÇÕƒ‚[ƒh
+		//è¿½è·¡ãƒ¢ãƒ¼ãƒ‰
 		m_eMoveMode = MODE_PURSUIT;
 		break;
 	}
 }
 
 //=============================================================
-// ƒŠƒXƒ^[ƒg‚Ì“®‚«‚Ì§ŒÀ
+// ãƒªã‚¹ã‚¿ãƒ¼ãƒˆæ™‚ã®å‹•ãã®åˆ¶é™
 //=============================================================
 void CCryde::RestartMove()
 {
-	//ˆê’èŠÔ‘Ò‹@
+	//ä¸€å®šæ™‚é–“å¾…æ©Ÿ
 	if (GetWait())
 	{
 		Restart();
 	}
 	else
 	{
-		//Œ»İ‚ÌƒGƒlƒ~[‚ÌˆÊ’u
+		//ç¾åœ¨ã®ã‚¨ãƒãƒŸãƒ¼ã®ä½ç½®
 		SetCurrentMazeIndex(GetPosY() / ENEMY_RELATIVE_MAZE_Y * MAZE_WIDTH + GetPosX() / ENEMY_RELATIVE_MAZE_X);
 
-		//ˆÚ“®
+		//ç§»å‹•
 		RestartMovement();
 
-		//ƒvƒŒƒCƒ„[‚ğH‚×‚é
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’é£Ÿã¹ã‚‹
 		EatPlayer();
 
-		//‚¢‚¶‚¯ƒJƒEƒ“ƒ^XV
+		//ã„ã˜ã‘ã‚«ã‚¦ãƒ³ã‚¿æ›´æ–°
 		IzikeCount();
 	}
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒJƒEƒ“ƒ^
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚«ã‚¦ãƒ³ã‚¿
 	SetAnimCounter(GetAnimCounter() + 1);
 
-	//ƒTƒEƒ“ƒh
+	//ã‚µã‚¦ãƒ³ãƒ‰
 	SEEnemyMove();
 }
 
 //=============================================================
-// ƒŠƒXƒ^[ƒg‚ÌˆÚ“®
+// ãƒªã‚¹ã‚¿ãƒ¼ãƒˆæ™‚ã®ç§»å‹•
 //=============================================================
 void CCryde::RestartMovement()
 {
 	int x = GetPosX();
 	int y = GetPosY();
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		if (!IsWall())
 		{
 			SetPosX(x += GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x - 1);
 			}
-			//‰º‚É§ŒÀ
+			//ä¸‹ã«åˆ¶é™
 			SetDirection(3);
 		}
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		if (!IsWall())
 		{
 			SetPosX(x -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosX(x + 1);
 			}
-			//‰º‚É§ŒÀ
+			//ä¸‹ã«åˆ¶é™
 			SetDirection(3);
 		}
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		if (!IsWall())
 		{
 			SetPosY(y -= GetSpeed());
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y - 1);
 			}
 
-			//‰E‚©¶‚É§ŒÀ
+			//å³ã‹å·¦ã«åˆ¶é™
 			m_iDirection = rand() % 2;
 			SetDirection(m_iDirection);
 		}
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		if (!IsWall())
 		{
 			SetPosY(y += GetSpeed());
@@ -1997,13 +1999,13 @@ void CCryde::RestartMovement()
 		}
 		else
 		{
-			//À•W‚Ì’²®
+			//åº§æ¨™ã®èª¿æ•´
 			while (!IsCorrection())
 			{
 				SetPosY(y + 1);
 			}
 
-			//’ÇÕƒ‚[ƒh
+			//è¿½è·¡ãƒ¢ãƒ¼ãƒ‰
 			m_eMoveMode = MODE_PURSUIT;
 		}
 		break;
@@ -2011,7 +2013,7 @@ void CCryde::RestartMovement()
 }
 
 //=============================================================
-// ‚¢‚¶‚¯ó‘ÔƒvƒŒƒCƒ„[‚ÆÕ“ËŒã5•bŠÔ’†‰›‚Å‘Ò‹@
+// ã„ã˜ã‘çŠ¶æ…‹æ™‚ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨è¡çªå¾Œ5ç§’é–“ä¸­å¤®ã§å¾…æ©Ÿ
 //=============================================================
 void CCryde::Restart()
 {
@@ -2025,7 +2027,7 @@ void CCryde::Restart()
 }
 
 //=============================================================
-// •`‰æ
+// æç”»
 //=============================================================
 void CCryde::Draw() const
 {
@@ -2040,28 +2042,28 @@ void CCryde::Draw() const
 }
 
 //=============================================================
-// ’Êíó‘Ô
+// é€šå¸¸çŠ¶æ…‹
 //=============================================================
 void CCryde::NormalState() const
 {
 	switch (m_eDirection)
 	{
-	case VECTOR_RIGHT:		//‰E
+	case VECTOR_RIGHT:		//å³
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHCryde[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2], TRUE);
 		break;
 
-	case VECTOR_LEFT:		//¶
+	case VECTOR_LEFT:		//å·¦
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHCryde[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2 + 2], TRUE);
 		break;
 
-	case VECTOR_UP:			//ã
+	case VECTOR_UP:			//ä¸Š
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHCryde[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2 + 4], TRUE);
 		break;
 
-	case VECTOR_DOWN:		//‰º
+	case VECTOR_DOWN:		//ä¸‹
 		DrawRotaGraph3(GetPosX() + ENEMY_DRAW_X, GetPosY() + ENEMY_DRAW_Y, 0, 0,
 			ENEMY_IMAGE_EXPANSION_X, ENEMY_IMAGE_EXPANSION_Y, 0, m_iGHCryde[(GetAnimCounter() / ENEMY_ANIM_SPEED) % 2 + 6], TRUE);
 		break;
